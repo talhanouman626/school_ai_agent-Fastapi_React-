@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+/* ── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar        { width: 4px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: rgba(255,255,255,0.1); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* ── Fade in animation ─────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn { animation: fadeIn 0.3s ease-out; }
+
+/* ── Message entrance ──────────────────────────────────────── */
+@keyframes messageIn {
+  from { opacity: 0; transform: translateY(6px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)  scale(1); }
+}
+
+/* ── Smooth scroll ─────────────────────────────────────────── */
+html { scroll-behavior: smooth; }
+
+/* ── Selection color ───────────────────────────────────────── */
+::selection { background: rgba(59,130,246,0.3); }
+
+/* ── Focus ring remove default ─────────────────────────────── */
+button:focus-visible {
+  outline: 2px solid rgba(59,130,246,0.6);
+  outline-offset: 2px;
+}
+
+/* ── Textarea resize fix ───────────────────────────────────── */
+textarea { field-sizing: content; }
+
+/* ── Table styles ──────────────────────────────────────────── */
+.prose table { width: 100%; border-collapse: collapse; }
+.prose th, .prose td {
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 6px 10px;
+  font-size: 12px;
+}
+.prose th { background: rgba(255,255,255,0.06); font-weight: 500; }
+
+/* ── Bounce animation fix ──────────────────────────────────── */
+@keyframes bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30%            { transform: translateY(-6px); }
+}
+.animate-bounce { animation: bounce 1s infinite; }
