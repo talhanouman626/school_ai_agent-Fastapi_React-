@@ -136,6 +136,13 @@ class TranslateResponse(BaseModel):
     translated: str
     original:   str
 
+class SuggestionsRequest(BaseModel):
+    user_query: str
+    bot_reply:  str
+
+class SuggestionsResponse(BaseModel):
+    suggestions: list[str]
+
 # ============================================================
 # ENDPOINTS
 # ============================================================
@@ -172,6 +179,54 @@ def translate(req: TranslateRequest):
 
     translated = translate_to_english(llm, req.text)
     return TranslateResponse(translated=translated, original=req.text)
+
+
+@app.post("/suggestions", response_model=SuggestionsResponse)
+def get_suggestions(req: SuggestionsRequest):
+    """
+    Bot reply ke baad 3 related follow-up questions generate karo.
+    User engagement badhane ke liye.
+    """
+    llm, ki, mi = get_active_llm(
+        app_state["api_keys"],
+        app_state["token_usage"],
+        app_state["active_key_idx"],
+        app_state["active_model_idx"],
+    )
+    if llm is None:
+        return SuggestionsResponse(suggestions=[])
+
+    try:
+        result = llm.invoke([
+            SystemMessage(content=(
+                "You are a helpful assistant for MGS (Message Grammar School), Lahore. "
+                "Based on the user's question and the bot's reply, generate exactly 3 short "
+                "follow-up questions a user might want to ask next. "
+                "Rules: "
+                "- Each question max 6 words "
+                "- Relevant to school topics only "
+                "- Output ONLY a JSON array of 3 strings, nothing else "
+                "- Example: [\"Fee payment methods?\", \"Any sibling discount?\", \"Admission deadline?\"]"
+            )),
+            HumanMessage(content=(
+                f"User asked: {req.user_query}\n"
+                f"Bot replied: {req.bot_reply[:300]}\n\n"
+                "Generate 3 follow-up questions as JSON array:"
+            )),
+        ])
+        import json, re
+        raw = result.content.strip()
+        # JSON array extract karo
+        match = re.search(r'\[.*?\]', raw, re.DOTALL)
+        if match:
+            suggestions = json.loads(match.group())
+            # Sirf strings rakho, max 3
+            suggestions = [s for s in suggestions if isinstance(s, str)][:3]
+            return SuggestionsResponse(suggestions=suggestions)
+    except Exception as ex:
+        logger.error(f"[SUGGESTIONS ERROR] {ex}")
+
+    return SuggestionsResponse(suggestions=[])
 
 
 @app.post("/chat", response_model=ChatResponse)
