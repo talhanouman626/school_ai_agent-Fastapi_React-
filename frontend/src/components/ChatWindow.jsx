@@ -172,6 +172,12 @@ function BotMessage({ content, isLatest, suggestions, onSuggestionSelect }) {
         </div>
       </div>
 
+      {/* Follow-up suggestions — DEBUG */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="ml-11 mt-1 text-xs text-yellow-500/50">
+          suggestions: {JSON.stringify(suggestions)} | done: {String(done)} | isLatest: {String(isLatest)}
+        </div>
+      )}
       {/* Follow-up suggestions */}
       {suggestions && suggestions.length > 0 && (done || !isLatest) && (
         <FollowUpSuggestions suggestions={suggestions} onSelect={onSuggestionSelect} />
@@ -222,14 +228,19 @@ export default function ChatWindow({ clearTrigger, onSidebarToggle }) {
   }, [messages, loading])
 
   // Follow-up suggestions generate karo
-  const generateSuggestions = async (userQuery, botReply, llm_hint) => {
+  const generateSuggestions = async (userQuery, botReply) => {
     try {
+      console.log('[Suggestions] Fetching from:', `${API}/suggestions`)
       const res = await axios.post(`${API}/suggestions`, {
         user_query: userQuery,
         bot_reply:  botReply,
       })
-      return res.data.suggestions || []
-    } catch {
+      console.log('[Suggestions] Response:', res.data)
+      const suggestions = res.data.suggestions || []
+      console.log('[Suggestions] Got:', suggestions)
+      return suggestions
+    } catch (err) {
+      console.error('[Suggestions] FAILED:', err?.response?.status, err?.response?.data || err?.message)
       return []
     }
   }
