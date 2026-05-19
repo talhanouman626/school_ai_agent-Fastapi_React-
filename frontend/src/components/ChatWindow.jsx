@@ -171,9 +171,11 @@ function BotMessage({ content, isLatest, suggestions, onSuggestionSelect }) {
         </div>
       </div>
 
-      {/* Follow-up suggestions — sirf last bot message ke neeche */}
-      {(!isLatest || done) && suggestions && suggestions.length > 0 && (
-        <FollowUpSuggestions suggestions={suggestions} onSelect={onSuggestionSelect} />
+      {/* Follow-up suggestions — typing done hone ke baad ya old messages mein */}
+      {(done || !isLatest) && suggestions && suggestions.length > 0 && (
+        <div className="animate-fadeIn">
+          <FollowUpSuggestions suggestions={suggestions} onSelect={onSuggestionSelect} />
+        </div>
       )}
     </div>
   )
