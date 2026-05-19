@@ -335,7 +335,7 @@ export default function ChatWindow({ clearTrigger, onSidebarToggle }) {
         </button>
         <div className="flex items-center justify-between flex-1">
           <h1 className="text-lg md:text-xl font-semibold text-white tracking-tight">
-            🤖 Message Grammar School (MGS)
+            🤖 AskMGS (AI Bot for your Guidance)
           </h1>
           <span className="hidden md:block text-xs text-white/30 bg-white/5 px-2 py-1 rounded-full border border-white/8">
             MGS Lahore
