@@ -1,0 +1,47 @@
+name: Sync Backend to HuggingFace Space
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'backend/**'   # sirf backend folder change hone pe run karo
+
+jobs:
+  sync-to-hf:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout GitHub repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Push backend to HuggingFace Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          cd backend
+
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+
+          # HF Space clone karo
+          git clone https://talhanouman37:$HF_TOKEN@huggingface.co/spaces/talhanouman37/mgs-backend hf_space
+
+          # Purani files hata do (folders except .git)
+          cd hf_space
+          find . -not -path './.git*' -not -name '.' -delete 2>/dev/null || true
+
+          # Backend files copy karo
+          cd ..
+          cp -r . hf_space/
+          rm -rf hf_space/.git 2>/dev/null || true
+
+          # Push karo
+          cd hf_space
+          git init
+          git remote add origin https://talhanouman37:$HF_TOKEN@huggingface.co/spaces/talhanouman37/mgs-backend
+          git add .
+          git commit -m "Sync from GitHub: ${{ github.sha }}"
+          git push origin main --force
