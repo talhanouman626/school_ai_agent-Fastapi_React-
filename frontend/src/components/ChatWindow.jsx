@@ -21,18 +21,14 @@ const SESSION_KEY = 'mgs_session_id'
 
 // ── Typing animation ──────────────────────────────────────────
 function useTypingEffect(text, speed = 6) {
-  // text=null matlab isLatest=false — seedha done=true
   const [displayed, setDisplayed] = useState('')
   const [done, setDone] = useState(!text)
 
   useEffect(() => {
-    if (!text) {
-      setDisplayed('')
-      setDone(true)   // isLatest=false → immediately done
-      return
-    }
+    if (!text) { setDisplayed(''); setDone(true); return }
     setDisplayed('')
     setDone(false)
+    if (!text) return
     let i = 0
     const timer = setInterval(() => {
       i++
@@ -178,20 +174,7 @@ function BotMessage({ content, isLatest, suggestions, onSuggestionSelect }) {
 
       {/* Follow-up suggestions */}
       {suggestions && suggestions.length > 0 && (done || !isLatest) && (
-        <div className="animate-fadeIn ml-11 mt-2 flex flex-col gap-1.5">
-          <p className="text-white/30 text-xs mb-1">📌 You might also want to know:</p>
-          <div className="flex flex-wrap gap-2">
-            {suggestions.map((s, i) => (
-              <button
-                key={i}
-                onClick={() => onSuggestionSelect(s)}
-                className="text-xs bg-[#1c2333] border border-blue-500/30 hover:border-blue-400/60 hover:bg-[#1e2a3a] text-blue-300 hover:text-blue-200 rounded-xl px-3 py-1.5 transition-all duration-150 text-left"
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        </div>
+        <FollowUpSuggestions suggestions={suggestions} onSelect={onSuggestionSelect} />
       )}
     </div>
   )
