@@ -65,7 +65,7 @@ function FollowUpSuggestions({ suggestions, onSelect }) {
 }
 
 // ── User message bubble ───────────────────────────────────────
-function UserMessage({ displayContent, originalContent, source }) {
+function UserMessage({ displayContent, originalContent, source, time }) {
   const isVoice = source === 'voice'
   const hasTranslation = originalContent && originalContent !== displayContent
 
@@ -90,6 +90,9 @@ function UserMessage({ displayContent, originalContent, source }) {
             {originalContent}
           </div>
         )}
+        {time && (
+          <span className="text-[10px] text-white/20 px-1">{time}</span>
+        )}
       </div>
       <div className="w-8 h-8 rounded-full flex items-center justify-center
                       shrink-0 mt-1 text-sm shadow-md"
@@ -101,7 +104,7 @@ function UserMessage({ displayContent, originalContent, source }) {
 }
 
 // ── Bot message bubble ────────────────────────────────────────
-function BotMessage({ content, isLatest, suggestions, onSuggestionSelect }) {
+function BotMessage({ content, isLatest, suggestions, onSuggestionSelect, time }) {
   const { displayed, done } = useTypingEffect(isLatest ? content : null, 6)
   const shown = isLatest ? displayed : content
   const [copied, setCopied] = useState(false)
@@ -158,6 +161,9 @@ function BotMessage({ content, isLatest, suggestions, onSuggestionSelect }) {
               <span className="inline-block w-0.5 h-4 bg-blue-400 ml-0.5 animate-pulse align-middle" />
             )}
           </div>
+          {time && (
+            <span className="text-[10px] text-white/20 px-1 mt-0.5">{time}</span>
+          )}
           <button
             onClick={handleCopy}
             className="self-start flex items-center gap-1.5 text-xs text-white/30
@@ -172,12 +178,6 @@ function BotMessage({ content, isLatest, suggestions, onSuggestionSelect }) {
         </div>
       </div>
 
-      {/* Follow-up suggestions — DEBUG */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="ml-11 mt-1 text-xs text-yellow-500/50">
-          suggestions: {JSON.stringify(suggestions)} | done: {String(done)} | isLatest: {String(isLatest)}
-        </div>
-      )}
       {/* Follow-up suggestions */}
       {suggestions && suggestions.length > 0 && (done || !isLatest) && (
         <FollowUpSuggestions suggestions={suggestions} onSelect={onSuggestionSelect} />
@@ -230,17 +230,12 @@ export default function ChatWindow({ clearTrigger, onSidebarToggle }) {
   // Follow-up suggestions generate karo
   const generateSuggestions = async (userQuery, botReply) => {
     try {
-      console.log('[Suggestions] Fetching from:', `${API}/suggestions`)
       const res = await axios.post(`${API}/suggestions`, {
         user_query: userQuery,
         bot_reply:  botReply,
       })
-      console.log('[Suggestions] Response:', res.data)
-      const suggestions = res.data.suggestions || []
-      console.log('[Suggestions] Got:', suggestions)
-      return suggestions
-    } catch (err) {
-      console.error('[Suggestions] FAILED:', err?.response?.status, err?.response?.data || err?.message)
+      return res.data.suggestions || []
+    } catch {
       return []
     }
   }
@@ -254,7 +249,8 @@ export default function ChatWindow({ clearTrigger, onSidebarToggle }) {
     setChatStarted(true)
     setLoading(true)
 
-    const userMsg = { role: 'user', original: msg, display: msg, source }
+    const now = () => new Date().toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit' })
+    const userMsg = { role: 'user', original: msg, display: msg, source, time: now() }
     setMessages(prev => [...prev, userMsg])
 
     try {
@@ -283,6 +279,7 @@ export default function ChatWindow({ clearTrigger, onSidebarToggle }) {
         role:        'bot',
         content:     res.data.reply,
         suggestions: suggestions,
+        time: now(),
       }])
 
     } catch (err) {
@@ -382,6 +379,7 @@ export default function ChatWindow({ clearTrigger, onSidebarToggle }) {
               displayContent={msg.display}
               originalContent={msg.original}
               source={msg.source}
+              time={msg.time}
             />
           ) : (
             <BotMessage
@@ -390,6 +388,7 @@ export default function ChatWindow({ clearTrigger, onSidebarToggle }) {
               isLatest={i === lastBotIndex}
               suggestions={msg.suggestions}
               onSuggestionSelect={(s) => sendMessage(s, 'text')}
+              time={msg.time}
             />
           )
         )}
