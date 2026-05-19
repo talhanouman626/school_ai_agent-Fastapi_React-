@@ -77,7 +77,7 @@ export default function Sidebar({ onClear, onClose }) {
                    hover:border-red-400 rounded-lg py-2 text-sm font-medium
                    transition-all duration-150"
       >
-        🗑️ Go To DashBoard
+        Go To DashBoard
       </button>
 
       {/* Footer */}
