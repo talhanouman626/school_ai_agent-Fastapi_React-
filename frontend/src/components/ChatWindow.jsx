@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import axios from 'axios'
 import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import MicButton from './MicButton'
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
@@ -16,16 +17,12 @@ const SUGGESTED_TOPICS = [
   { icon: '📞', label: 'Contact?' },
 ]
 
-const STORAGE_KEY = 'mgs_chat_messages'
-const SESSION_KEY = 'mgs_session_id'
-
-// ── Typing animation ──────────────────────────────────────────
-function useTypingEffect(text, speed = 6) {
+// ── Typing animation hook ─────────────────────────────────────
+function useTypingEffect(text, speed = 8) {
   const [displayed, setDisplayed] = useState('')
-  const [done, setDone] = useState(!text)
+  const [done, setDone] = useState(false)
 
   useEffect(() => {
-    if (!text) { setDisplayed(''); setDone(true); return }
     setDisplayed('')
     setDone(false)
     if (!text) return
@@ -33,7 +30,10 @@ function useTypingEffect(text, speed = 6) {
     const timer = setInterval(() => {
       i++
       setDisplayed(text.slice(0, i))
-      if (i >= text.length) { clearInterval(timer); setDone(true) }
+      if (i >= text.length) {
+        clearInterval(timer)
+        setDone(true)
+      }
     }, speed)
     return () => clearInterval(timer)
   }, [text, speed])
@@ -41,70 +41,8 @@ function useTypingEffect(text, speed = 6) {
   return { displayed, done }
 }
 
-// ── Follow-up suggestion chips ────────────────────────────────
-function FollowUpSuggestions({ suggestions, onSelect }) {
-  if (!suggestions || suggestions.length === 0) return null
-  return (
-    <div className="ml-11 mt-2 flex flex-col gap-1.5">
-      <p className="text-white/30 text-xs mb-1">📌 You might also want to know:</p>
-      <div className="flex flex-wrap gap-2">
-        {suggestions.map((s, i) => (
-          <button
-            key={i}
-            onClick={() => onSelect(s)}
-            className="text-xs bg-[#1c2333] border border-blue-500/30 hover:border-blue-400/60
-                       hover:bg-[#1e2a3a] text-blue-300 hover:text-blue-200
-                       rounded-xl px-3 py-1.5 transition-all duration-150 text-left"
-          >
-            {s}
-          </button>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// ── User message bubble ───────────────────────────────────────
-function UserMessage({ displayContent, originalContent, source, time }) {
-  const isVoice = source === 'voice'
-  const hasTranslation = originalContent && originalContent !== displayContent
-
-  return (
-    <div className="flex gap-3 justify-end">
-      <div className="flex flex-col items-end gap-1 max-w-[75%]">
-        <div className="flex items-center gap-1.5">
-          {isVoice
-            ? <span className="text-xs text-white/30 flex items-center gap-1">
-                <span className="inline-block w-1.5 h-1.5 bg-red-400 rounded-full animate-pulse" />
-                Voice
-              </span>
-            : <span className="text-xs text-white/20">Text</span>
-          }
-        </div>
-        <div className="bg-[#2d333b] border border-white/5 text-white
-                        rounded-2xl rounded-br-none px-4 py-3 text-sm leading-relaxed shadow-sm">
-          {displayContent}
-        </div>
-        {isVoice && hasTranslation && (
-          <div className="text-xs text-white/25 px-1 text-right" dir="rtl">
-            {originalContent}
-          </div>
-        )}
-        {time && (
-          <span className="text-[10px] text-white/20 px-1">{time}</span>
-        )}
-      </div>
-      <div className="w-8 h-8 rounded-full flex items-center justify-center
-                      shrink-0 mt-1 text-sm shadow-md"
-           style={{ background: isVoice ? '#ef4444' : '#dc2626' }}>
-        {isVoice ? '🎤' : '👤'}
-      </div>
-    </div>
-  )
-}
-
 // ── Bot message bubble ────────────────────────────────────────
-function BotMessage({ content, isLatest, suggestions, onSuggestionSelect, time }) {
+function BotMessage({ content, isLatest }) {
   const { displayed, done } = useTypingEffect(isLatest ? content : null, 6)
   const shown = isLatest ? displayed : content
   const [copied, setCopied] = useState(false)
@@ -116,108 +54,161 @@ function BotMessage({ content, isLatest, suggestions, onSuggestionSelect, time }
   }
 
   return (
-    <div className="flex flex-col gap-0">
-      <div className="group flex gap-3 justify-start">
-        <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center
-                        justify-center shrink-0 mt-1 text-sm shadow-md">
-          🤖
-        </div>
-        <div className="flex flex-col gap-1 max-w-[75%]">
-          <div className="bg-[#1c2128] border border-white/5 text-gray-200
-                          rounded-2xl rounded-bl-none px-4 py-3 text-sm leading-relaxed shadow-sm">
-            <ReactMarkdown
-              components={{
-                a: ({ node, ...props }) => (
-                  <a {...props} target="_blank" rel="noopener noreferrer"
-                    className="text-blue-400 hover:text-blue-300 underline underline-offset-2" />
-                ),
-                table: ({ node, ...props }) => (
-                  <div className="overflow-x-auto mt-3 mb-1">
-                    <table {...props} className="border-collapse w-full text-xs" />
-                  </div>
-                ),
-                th: ({ node, ...props }) => (
-                  <th {...props} className="border border-white/15 px-3 py-2 bg-white/8 text-left font-medium" />
-                ),
-                td: ({ node, ...props }) => (
-                  <td {...props} className="border border-white/10 px-3 py-2" />
-                ),
-                p:      ({ node, ...props }) => <p      {...props} className="mb-2 last:mb-0" />,
-                ul:     ({ node, ...props }) => <ul     {...props} className="list-disc list-inside space-y-1 mb-2 text-gray-300" />,
-                ol:     ({ node, ...props }) => <ol     {...props} className="list-decimal list-inside space-y-1 mb-2 text-gray-300" />,
-                li:     ({ node, ...props }) => <li     {...props} className="leading-relaxed" />,
-                strong: ({ node, ...props }) => <strong {...props} className="text-white font-medium" />,
-                h1:     ({ node, ...props }) => <h1     {...props} className="text-base font-semibold mb-2 text-white" />,
-                h2:     ({ node, ...props }) => <h2     {...props} className="text-sm font-semibold mb-2 text-white" />,
-                h3:     ({ node, ...props }) => <h3     {...props} className="text-sm font-medium mb-1 text-white/90" />,
-                code: ({ node, inline, ...props }) => inline
-                  ? <code {...props} className="bg-white/10 px-1.5 py-0.5 rounded text-xs font-mono text-blue-300" />
-                  : <code {...props} className="block bg-black/30 rounded-lg p-3 text-xs font-mono text-green-300 mt-2 overflow-x-auto" />,
-              }}
-            >
-              {shown}
-            </ReactMarkdown>
-            {isLatest && !done && (
-              <span className="inline-block w-0.5 h-4 bg-blue-400 ml-0.5 animate-pulse align-middle" />
-            )}
-          </div>
-          {time && (
-            <span className="text-[10px] text-white/20 px-1 mt-0.5">{time}</span>
-          )}
-          <button
-            onClick={handleCopy}
-            className="self-start flex items-center gap-1.5 text-xs text-white/30
-                       hover:text-white/70 transition-colors px-1 py-0.5 rounded
-                       opacity-0 group-hover:opacity-100"
+    <div className="group flex gap-3 justify-start">
+      <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center shrink-0 mt-1 text-sm shadow-md">
+        🤖
+      </div>
+      <div className="flex flex-col gap-1 max-w-[75%]">
+        <div className="bg-[#1c2128] border border-white/5 text-gray-200 rounded-2xl rounded-bl-none px-4 py-3 text-sm leading-relaxed shadow-sm">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              a: ({ node, ...props }) => (
+                <a {...props} target="_blank" rel="noopener noreferrer"
+                  className="text-blue-400 hover:text-blue-300 underline underline-offset-2" />
+              ),
+              table: ({ node, ...props }) => (
+                <div className="overflow-x-auto my-3 rounded-lg border border-white/10">
+                  <table {...props} className="w-full text-xs border-collapse" />
+                </div>
+              ),
+              thead: ({ node, ...props }) => (
+                <thead {...props} className="bg-white/8" />
+              ),
+              th: ({ node, ...props }) => (
+                <th {...props} className="px-4 py-2.5 text-left text-white/80 font-medium border-b border-white/10 whitespace-nowrap" />
+              ),
+              td: ({ node, ...props }) => (
+                <td {...props} className="px-4 py-2 text-gray-300 border-b border-white/5" />
+              ),
+              tr: ({ node, ...props }) => (
+                <tr {...props} className="hover:bg-white/3 transition-colors" />
+              ),
+              p:      ({ node, ...props }) => <p      {...props} className="mb-2 last:mb-0" />,
+              ul:     ({ node, ...props }) => <ul     {...props} className="list-disc list-inside space-y-1 mb-2 text-gray-300" />,
+              ol:     ({ node, ...props }) => <ol     {...props} className="list-decimal list-inside space-y-1 mb-2 text-gray-300" />,
+              li:     ({ node, ...props }) => <li     {...props} className="leading-relaxed" />,
+              strong: ({ node, ...props }) => <strong {...props} className="text-white font-medium" />,
+              h1:     ({ node, ...props }) => <h1     {...props} className="text-base font-semibold mb-2 text-white" />,
+              h2:     ({ node, ...props }) => <h2     {...props} className="text-sm font-semibold mb-2 text-white" />,
+              h3:     ({ node, ...props }) => <h3     {...props} className="text-sm font-medium mb-1 text-white/90" />,
+              code: ({ node, inline, ...props }) => inline
+                ? <code {...props} className="bg-white/10 px-1.5 py-0.5 rounded text-xs font-mono text-blue-300" />
+                : <code {...props} className="block bg-black/30 rounded-lg p-3 text-xs font-mono text-green-300 mt-2 overflow-x-auto" />,
+            }}
           >
-            {copied
-              ? <><span className="text-green-400">✓</span> Copied!</>
-              : <><span>📋</span> Copy</>
-            }
-          </button>
+            {shown}
+          </ReactMarkdown>
+          {isLatest && !done && (
+            <span className="inline-block w-0.5 h-4 bg-blue-400 ml-0.5 animate-pulse align-middle" />
+          )}
         </div>
+        <button
+          onClick={handleCopy}
+          className="self-start flex items-center gap-1.5 text-xs text-white/30 hover:text-white/70 transition-colors px-1 py-0.5 rounded"
+        >
+          {copied
+            ? <><span className="text-green-400">✓</span> Copied!</>
+            : <><span>📋</span> Copy</>
+          }
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// ── Backend loading overlay ───────────────────────────────────
+function BackendLoader({ step }) {
+  const steps = [
+    { key: 'embeddings', label: 'Loading AI model...',       icon: '🧠' },
+    { key: 'faiss',      label: 'Loading knowledge base...', icon: '📚' },
+    { key: 'keys',       label: 'Loading API keys...',       icon: '🔑' },
+    { key: 'ready',      label: 'Almost ready...',           icon: '✅' },
+  ]
+  const currentIdx = steps.findIndex(s => s.key === step)
+
+  return (
+    <div className="flex flex-col flex-1 items-center justify-center bg-[#0e1117] gap-6">
+      <div className="text-4xl animate-pulse">🤖</div>
+      <div className="text-white font-semibold text-lg">Campus Companion AI</div>
+      <div className="text-white/40 text-sm">Starting up, please wait...</div>
+
+      {/* Progress steps */}
+      <div className="flex flex-col gap-3 mt-2 w-64">
+        {steps.map((s, i) => {
+          const done    = i < currentIdx
+          const active  = i === currentIdx
+          const pending = i > currentIdx
+          return (
+            <div key={s.key} className={`flex items-center gap-3 text-sm transition-all duration-300
+              ${done    ? 'text-green-400'  : ''}
+              ${active  ? 'text-white'      : ''}
+              ${pending ? 'text-white/20'   : ''}
+            `}>
+              <span className="text-base w-6 text-center">
+                {done ? '✅' : active ? <span className="inline-block animate-spin">⏳</span> : s.icon}
+              </span>
+              <span>{s.label}</span>
+            </div>
+          )
+        })}
       </div>
 
-      {/* Follow-up suggestions */}
-      {suggestions && suggestions.length > 0 && (done || !isLatest) && (
-        <FollowUpSuggestions suggestions={suggestions} onSelect={onSuggestionSelect} />
-      )}
+      {/* Pulsing bar */}
+      <div className="w-64 h-1 bg-white/5 rounded-full overflow-hidden mt-2">
+        <div
+          className="h-full bg-blue-500 rounded-full transition-all duration-700"
+          style={{ width: `${((currentIdx + 1) / steps.length) * 100}%` }}
+        />
+      </div>
     </div>
   )
 }
 
 // ── Main ChatWindow ───────────────────────────────────────────
-export default function ChatWindow({ clearTrigger, onSidebarToggle }) {
-  // Priority 2: localStorage se restore karo
-  const [messages, setMessages] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY)
-      return saved ? JSON.parse(saved) : []
-    } catch { return [] }
-  })
-  const [input, setInput]             = useState('')
-  const [loading, setLoading]         = useState(false)
-  const [sessionId, setSessionId]     = useState(() => localStorage.getItem(SESSION_KEY) || null)
-  const [chatStarted, setChatStarted] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY)
-      const msgs = saved ? JSON.parse(saved) : []
-      return msgs.length > 0
-    } catch { return false }
-  })
+export default function ChatWindow({ onClear, clearTrigger }) {
+  const [messages, setMessages]         = useState([])
+  const [input, setInput]               = useState('')
+  const [loading, setLoading]           = useState(false)
+  const [sessionId, setSessionId]       = useState(null)
+  const [chatStarted, setChatStarted]   = useState(false)
+  const [backendReady, setBackendReady] = useState(false)
+  const [loadStep, setLoadStep]         = useState('embeddings')
   const bottomRef   = useRef(null)
   const textareaRef = useRef(null)
+  const pollRef     = useRef(null)
 
-  // localStorage mein save karo jab messages change hon
+  // ── Backend ready hone tak /health poll karo ───────────────
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages))
-    } catch {}
-  }, [messages])
+    const STEPS = ['embeddings', 'faiss', 'keys', 'ready']
+    let stepIdx = 0
 
-  useEffect(() => {
-    if (sessionId) localStorage.setItem(SESSION_KEY, sessionId)
-  }, [sessionId])
+    const advance = () => {
+      stepIdx = Math.min(stepIdx + 1, STEPS.length - 1)
+      setLoadStep(STEPS[stepIdx])
+    }
+
+    // Har 1.5s step advance karo (visual progress)
+    const stepTimer = setInterval(advance, 1500)
+
+    // Har 2s backend ping karo
+    pollRef.current = setInterval(async () => {
+      try {
+        await axios.get(`${API}/health`, { timeout: 2000 })
+        clearInterval(pollRef.current)
+        clearInterval(stepTimer)
+        setLoadStep('ready')
+        setTimeout(() => setBackendReady(true), 600)
+      } catch {
+        // still loading — keep polling
+      }
+    }, 2000)
+
+    return () => {
+      clearInterval(pollRef.current)
+      clearInterval(stepTimer)
+    }
+  }, [])
 
   useEffect(() => {
     if (clearTrigger > 0) handleClear()
@@ -227,68 +218,42 @@ export default function ChatWindow({ clearTrigger, onSidebarToggle }) {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, loading])
 
-  // Follow-up suggestions generate karo
-  const generateSuggestions = async (userQuery, botReply) => {
-    try {
-      const res = await axios.post(`${API}/suggestions`, {
-        user_query: userQuery,
-        bot_reply:  botReply,
-      })
-      return res.data.suggestions || []
-    } catch {
-      return []
-    }
-  }
-
-  const sendMessage = useCallback(async (text, source = 'text') => {
+  const sendMessage = useCallback(async (text, isVoice = false) => {
     const msg = (text || input).trim()
-    if (!msg || loading) return
+    if (!msg || loading || !backendReady) return
 
     setInput('')
     if (textareaRef.current) textareaRef.current.style.height = 'auto'
     setChatStarted(true)
     setLoading(true)
 
-    const now = () => new Date().toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit' })
-    const userMsg = { role: 'user', original: msg, display: msg, source, time: now() }
-    setMessages(prev => [...prev, userMsg])
+    // Voice → English translate for display
+    let displayMsg = msg
+    if (isVoice) {
+      try {
+        const t = await axios.post(`${API}/translate`, { text: msg })
+        displayMsg = t.data.translated || msg
+      } catch {
+        displayMsg = msg
+      }
+    }
+
+    setMessages(prev => [...prev, { role: 'user', content: displayMsg, source: isVoice ? 'voice' : 'text' }])
 
     try {
       const res = await axios.post(`${API}/chat`, {
         message:    msg,
         session_id: sessionId,
       })
-
       setSessionId(res.data.session_id)
-
-      // Translated query se display update karo
-      const translated = res.data.translated_query
-      if (translated && translated !== msg) {
-        setMessages(prev => {
-          const updated = [...prev]
-          const lastUserIdx = updated.map(m => m.role).lastIndexOf('user')
-          if (lastUserIdx !== -1) updated[lastUserIdx] = { ...updated[lastUserIdx], display: translated }
-          return updated
-        })
-      }
-
-      // Follow-up suggestions fetch karo
-      const suggestions = await generateSuggestions(msg, res.data.reply)
-
-      setMessages(prev => [...prev, {
-        role:        'bot',
-        content:     res.data.reply,
-        suggestions: suggestions,
-        time: now(),
-      }])
-
+      setMessages(prev => [...prev, { role: 'bot', content: res.data.reply }])
     } catch (err) {
       const detail = err.response?.data?.detail || 'Something went wrong. Please try again.'
-      setMessages(prev => [...prev, { role: 'bot', content: `⚠️ ${detail}`, suggestions: [] }])
+      setMessages(prev => [...prev, { role: 'bot', content: `⚠️ ${detail}` }])
     } finally {
       setLoading(false)
     }
-  }, [input, loading, sessionId])
+  }, [input, loading, sessionId, backendReady])
 
   const handleClear = async () => {
     if (sessionId) {
@@ -297,14 +262,12 @@ export default function ChatWindow({ clearTrigger, onSidebarToggle }) {
     setMessages([])
     setSessionId(null)
     setChatStarted(false)
-    localStorage.removeItem(STORAGE_KEY)
-    localStorage.removeItem(SESSION_KEY)
   }
 
   const handleKey = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
-      sendMessage(input, 'text')
+      sendMessage()
     }
   }
 
@@ -316,38 +279,31 @@ export default function ChatWindow({ clearTrigger, onSidebarToggle }) {
 
   const lastBotIndex = messages.map(m => m.role).lastIndexOf('bot')
 
+  // ── Backend loading screen ─────────────────────────────────
+  if (!backendReady) return <BackendLoader step={loadStep} />
+
+  // ── Normal chat UI ─────────────────────────────────────────
   return (
     <div className="flex flex-col flex-1 min-w-0 h-screen bg-[#0e1117]">
 
       {/* Header */}
-      <div className="shrink-0 px-4 md:px-8 pt-4 pb-3 border-b border-white/8 flex items-center gap-3">
-        {/* Hamburger — mobile only */}
-        <button
-          onClick={onSidebarToggle}
-          className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg
-                     hover:bg-white/8 text-white/60 hover:text-white transition-colors"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-            strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-            <path strokeLinecap="round" strokeLinejoin="round"
-              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-          </svg>
-        </button>
-        <div className="flex items-center justify-between flex-1">
-          <h1 className="text-lg md:text-xl font-semibold text-white tracking-tight">
-            🤖 AskMGS (AI Bot for your Guidance)
+      <div className="shrink-0 px-8 pt-5 pb-4 border-b border-white/8">
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl font-semibold text-white tracking-tight">
+            🤖 Campus Companion AI
           </h1>
-          <span className="hidden md:block text-xs text-white/30 bg-white/5 px-2 py-1 rounded-full border border-white/8">
+          <span className="text-xs text-white/30 bg-white/5 px-2 py-1 rounded-full border border-white/8">
             MGS Lahore
           </span>
         </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-4 scroll-smooth">
+      <div className="flex-1 overflow-y-auto px-8 py-6 space-y-4 scroll-smooth">
 
+        {/* Suggested topics */}
         {!chatStarted && (
-          <div>
+          <div className="animate-fadeIn">
             <p className="text-white/40 text-xs font-medium mb-3 tracking-wide uppercase">
               💡 What would you like to know?
             </p>
@@ -355,12 +311,12 @@ export default function ChatWindow({ clearTrigger, onSidebarToggle }) {
               {SUGGESTED_TOPICS.map((t) => (
                 <button
                   key={t.label}
-                  onClick={() => sendMessage(t.label, 'text')}
+                  onClick={() => sendMessage(t.label)}
                   className="bg-[#161b22] border border-[#30363d] hover:border-blue-500/60
-                             hover:bg-[#1c2333] rounded-xl p-3 md:p-3.5 text-left transition-all
+                             hover:bg-[#1c2333] rounded-xl p-3.5 text-left transition-all
                              duration-200 group cursor-pointer"
                 >
-                  <span className="text-xl block mb-1.5 group-hover:scale-110 transition-transform duration-200">
+                  <span className="text-xl block mb-2 group-hover:scale-110 transition-transform duration-200">
                     {t.icon}
                   </span>
                   <span className="text-gray-400 group-hover:text-gray-200 text-xs leading-snug transition-colors">
@@ -372,33 +328,36 @@ export default function ChatWindow({ clearTrigger, onSidebarToggle }) {
           </div>
         )}
 
+        {/* Chat messages */}
         {messages.map((msg, i) =>
-          msg.role === 'user' ? (
-            <UserMessage
-              key={i}
-              displayContent={msg.display}
-              originalContent={msg.original}
-              source={msg.source}
-              time={msg.time}
-            />
+          msg.role === 'bot' ? (
+            <BotMessage key={i} content={msg.content} isLatest={i === lastBotIndex} />
           ) : (
-            <BotMessage
-              key={i}
-              content={msg.content}
-              isLatest={i === lastBotIndex}
-              suggestions={msg.suggestions}
-              onSuggestionSelect={(s) => sendMessage(s, 'text')}
-              time={msg.time}
-            />
+            <div key={i} className="flex gap-3 justify-end">
+              <div className="flex flex-col items-end gap-1 max-w-[75%]">
+                <div className="bg-[#2d333b] border border-white/5 text-white rounded-2xl rounded-br-none px-4 py-3 text-sm leading-relaxed shadow-sm">
+                  {msg.content}
+                </div>
+                <span className="text-xs text-white/25 flex items-center gap-1 pr-1">
+                  {msg.source === 'voice'
+                    ? <><span>🎤</span> Voice message</>
+                    : <><span>⌨️</span> Text message</>
+                  }
+                </span>
+              </div>
+              <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center shrink-0 mt-1 text-sm shadow-md">
+                👤
+              </div>
+            </div>
           )
         )}
 
+        {/* Typing indicator */}
         {loading && (
           <div className="flex gap-3 justify-start">
             <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center
                             justify-center shrink-0 text-sm shadow-md">🤖</div>
-            <div className="bg-[#1c2128] border border-white/5 rounded-2xl
-                            rounded-bl-none px-5 py-4 shadow-sm">
+            <div className="bg-[#1c2128] border border-white/5 rounded-2xl rounded-bl-none px-5 py-4 shadow-sm">
               <div className="flex gap-1.5 items-center">
                 {[0, 1, 2].map(i => (
                   <div key={i} className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"
@@ -413,7 +372,7 @@ export default function ChatWindow({ clearTrigger, onSidebarToggle }) {
       </div>
 
       {/* Input bar */}
-      <div className="shrink-0 px-4 md:px-8 py-4 border-t border-white/8 bg-[#0e1117]">
+      <div className="shrink-0 px-8 py-4 border-t border-white/8 bg-[#0e1117]">
         <div className="flex gap-2.5 items-end bg-[#1c2128] border border-white/8
                         hover:border-white/15 focus-within:border-blue-500/40
                         rounded-2xl px-4 py-3 transition-all duration-200">
@@ -428,9 +387,9 @@ export default function ChatWindow({ clearTrigger, onSidebarToggle }) {
                        text-white placeholder-white/25 max-h-32 leading-relaxed"
           />
           <div className="flex items-center gap-2 shrink-0">
-            <MicButton onTranscript={(text) => sendMessage(text, 'voice')} />
+            <MicButton onTranscript={(text) => sendMessage(text, true)} />
             <button
-              onClick={() => sendMessage(input, 'text')}
+              onClick={() => sendMessage()}
               disabled={!input.trim() || loading}
               className="w-9 h-9 rounded-full bg-blue-600 hover:bg-blue-500 active:scale-95
                          disabled:opacity-25 disabled:cursor-not-allowed
@@ -445,7 +404,7 @@ export default function ChatWindow({ clearTrigger, onSidebarToggle }) {
             </button>
           </div>
         </div>
-        <p className="text-white/15 text-xs text-center mt-2 hidden md:block">
+        <p className="text-white/15 text-xs text-center mt-2">
           Press <kbd className="px-1.5 py-0.5 bg-white/8 rounded text-white/30">Enter</kbd> to send
           &nbsp;·&nbsp;
           <kbd className="px-1.5 py-0.5 bg-white/8 rounded text-white/30">Shift+Enter</kbd> for new line
