@@ -16,13 +16,11 @@ Enrol Now! Fee Bill Payment Annual Calendar
 
 
 
-M Block, Izmir Society, Canal Road, Lahore.
-
+School Address(Branch 1): M Block, Izmir Society, Canal Road, Lahore.
 0304-1111-MGS (0304 1111 647)  
 042 35961842 (MGS IZMIR)
 
-Canal Road, Opposite Izmir Society, Lahore.
-
+School Address(Branch 2): Canal Road, Opposite Izmir Society, Lahore.
 0300-7444382  
 042 35404834 (MGS Qarshi University Campus)
 
