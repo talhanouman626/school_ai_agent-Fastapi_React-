@@ -1,22 +1,36 @@
-# Fee Structure
+# Fee Structure 2025-2026
 source_url: https://www.mgs.edu.pk/fee-structure
 
+## Admission Charges (Non-Refundable)
+- Registration Fee: Rs. 3,000
+- Admission Fee: Rs. 20,500
+
+## Security Charges (Refundable on leaving school)
+- Playgroup to Matric: Rs. 19,500
+- Grade IX to XI (O Level): Rs. 26,000
+
 ## Monthly Tuition Fees
-| Class Level | Monthly Fee | Admission Fee (One-time) |
-| :--- | :--- | :--- |
-| **Nursery** | Rs. 15,000 | Rs. 25,000 |
-| **Prep / KG** | Rs. 16,000 | Rs. 25,000 |
-| **Class 1 to 5** | Rs. 18,000 | Rs. 30,000 |
-| **Class 6 to 8** | Rs. 20,000 | Rs. 30,000 |
-| **Class 9 to 10** | Rs. 22,000 | Rs. 35,000 |
+| Level | Monthly Fee |
+| :--- | :--- |
+| PG to KG (Playgroup, Nursery, Kindergarten) | Rs. 15,040 |
+| Grade I to V | Rs. 15,370 |
+| Grade VI to VIII | Rs. 15,710 |
+| Grade IX to X (Matric) | Rs. 15,710 |
+| Grade IX to XI (O Level) | Rs. 21,500 |
 
 ## Other Charges
-- **Security Fee:** Rs. 10,000 (Refundable at the time of leaving school).
-- **Annual Resource Fee:** Rs. 5,000 (Payable every year in March).
-- **Exam Fee:** Rs. 2,000 (Per Term).
+- Annual Resource Fee: Rs. 5,000 (payable every year in March)
+- Exam Fee: Rs. 2,000 per term
 
-## Important Fee Policies
-- Fee is due by 10th of every month.
-- Late payment fine of Rs. 500 per day will be charged after the due date.
-- If the fee is not paid for two consecutive months, the student's name will be struck off the rolls.
-- Sibling discount: 10% on monthly tuition fee for the second child.
+## Fee Payment Policy
+- Fee due by 10th of every month
+- Late fine: Rs. 500 per day after due date
+- Fee unpaid for 2 consecutive months: student name struck off rolls
+
+## Available Discounts
+- Siblings Discount
+- Izmir Residents Discount (Izmir Campus only)
+- Employee Discount
+- Financial Aid (subject to need and budget)
+
+Note: Only one discount at a time. Valid for one academic year only.

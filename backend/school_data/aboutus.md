@@ -1,80 +1,108 @@
 # About Message Grammar School (MGS)
+source_url: https://www.mgs.edu.pk/about-us.html
+
+---
+
+## Quick Facts
+- **Founded:** 2006
+- **Type:** Private Islamic English Medium School
+- **Location:** Lahore, Pakistan
+- **Levels:** Playgroup to Matric & O Level
+- **Special Programme:** Hifz Programme (boys only)
+- **Campuses:** 2 (MGS Izmir + MGS Qarshi University Campus)
+
+---
 
 ## Message Foundation
-Established in **2003** under the capable leadership of our esteemed trustees, the Message Foundation aimed to revolutionize Pakistan's educational landscape. The goal was to offer contemporary education imbued with Islamic values, leading to the establishment of Message Grammar School. The aim of Message Foundation is to establish a nationwide network of MGS branches pioneering Islamic-based contemporary education.
+- Established in **2003**
+- Goal: Provide contemporary education with Islamic values
+- Vision: Nationwide network of MGS branches
 
 ## Message Grammar School
-Message Grammar School was founded in **2006** and seeks to transform Pakistan's academic culture by offering contemporary education within a globally competitive environment. With a focus on instilling genuine Islamic values, the school strives to cultivate knowledgeable and practicing Muslims capable of excelling both locally and internationally. 
-
-The school successfully delivers quality education from **Playgroup to Matric & O Level**, and additionally offers an optional **Hifz Programme** exclusively for boys.
+- Founded in **2006**
+- Offers education from Playgroup to Matric & O Level
+- Optional Hifz Programme exclusively for boys
+- Focus: Islamic values + globally competitive education
 
 ---
 
 ## Vision Statement
-We are here to nurture global citizens who are intellectually curious, ethically grounded, and civically engaged. Model citizens for the ummah, our students will flourish in their chosen fields and make significant contributions to the world, while promulgating the Message of Islam.
+To nurture global citizens who are intellectually curious, ethically grounded, and civically engaged — model citizens for the ummah who make significant contributions to the world while promulgating the Message of Islam.
 
 ## Mission Statement
-We produce world-class thinkers and leaders who will make a positive impact on the world, guided by the Islamic values. We do this by providing a rigorous and challenging education that fosters critical thinking, creativity, and innovation. We maintain a supportive and inclusive environment where students can learn from each other and from the best minds in the world, while upholding the principles and practices of Islam.
+To produce world-class thinkers and leaders who make a positive impact, guided by Islamic values — through rigorous education that fosters critical thinking, creativity, and innovation in a supportive and inclusive environment.
 
 ---
 
 ## Core Values
-| Value | Description |
+| Value | Meaning |
 | :--- | :--- |
-| **Empathy & Compassion** | Understanding and sharing the feelings of others. |
-| **Ihsan** | Excellence in Action. |
-| **Innovation & Creativity** | Fostering new ideas and original thinking. |
-| **Sidq** | Truthfulness. |
-| **Collaboration** | Working together and Social Responsibility. |
+| Empathy & Compassion | Understanding and sharing the feelings of others |
+| Ihsan | Excellence in Action |
+| Innovation & Creativity | Fostering new ideas and original thinking |
+| Sidq | Truthfulness |
+| Collaboration | Working together and Social Responsibility |
 
 ---
 
 ## Board of Trustees
-1. **Mr. Iqbal Ahmed Qarshi** (Chairman)
-2. **Mr. Mian Muhammad Ahsan** (Co-Chairman)
-3. **Mr. Javed Arshad Bhatti**
-4. **Mr. Imtiaz Ahmed Khan**
-5. **Mr. Anwaar Ahmad Khan**
-6. **Mr. Jawed Salim Qureshi**
-7. **Mr. Ilyas M. Chaudhary**
+1. **Mr. Iqbal Ahmed Qarshi** — Chairman
+2. **Mr. Mian Muhammad Ahsan** — Co-Chairman
+3. **Mr. Javed Arshad Bhatti** — Trustee
+4. **Mr. Imtiaz Ahmed Khan** — Trustee
+5. **Mr. Anwaar Ahmad Khan** — Trustee
+6. **Mr. Jawed Salim Qureshi** — Trustee
+7. **Mr. Ilyas M. Chaudhary** — Trustee
 
 ---
 
-## Leadership Messages
+## Key Leadership
 
-### Chairman’s Message
-> "Assalam o Alaikum, Message Grammar School is a collaborative effort of its 'Hum Khayal' board members... The aim and objective of MGS is to provide the best education and grooming, i.e., 'Taleem aur Tarbiyat,' enabling our students to become 'Managers of Change in a Society based on Ethics and Values'."
->
-> **— Iqbal Ahmed Qarshi (Chairman)**
+### Chairman — Iqbal Ahmed Qarshi
+MGS is a collaborative effort aimed at providing best education and grooming (Taleem aur Tarbiyat), enabling students to become Managers of Change in a Society based on Ethics and Values.
 
-### Co-Chairman’s Message
-> "Welcome to Message Grammar School – an institution where contemporary education meets timeless Islamic values. Since our establishment in 2006, MGS has been committed to nurturing confident, ethical, and visionary leaders."
->
-> **— Mian Muhammad Ahsan (Co-Chairman)**
+### Co-Chairman — Mian Muhammad Ahsan
+Since 2006, MGS has been committed to nurturing confident, ethical, and visionary leaders through a curriculum that blends academic excellence with spiritual and moral growth.
 
-### Executive Director’s Message
-> "Our institution stands as a beacon of contemporary Islamic education... In 2022, we inaugurated our second campus – MGS Qarshi University Campus. Furthermore, we are in the planning stages for our third purpose-built campus on LDA Avenue."
->
-> **— Muhammad Azhar Khan (Executive Director)**
+### Executive Director — Muhammad Azhar Khan
+Serving since 2019. MGS stands as a beacon of contemporary Islamic education. In 2022, the second campus (MGS Qarshi University Campus) was inaugurated. A third campus on LDA Avenue is in planning.
 
-### Head of School's Message
-> "Our approach is tarbiyah-driven, focusing on encouraging and offering avenues for our core values to be reinforced. Events like Seerah Week and retreat nights play a crucial role in this reinforcement."
->
-> **— Moeen Mahmood (Head of School)**
+### Head of School — Moeen Mahmood
+MGS uses a tarbiyah-driven approach. Core values are reinforced through events like Seerah Week and Retreat Nights. Faculty are trained to incorporate Islamic values into teaching.
 
 ---
 
-## Contact & Locations
-
-### Flagship Campus (MGS Izmir)
-* **Address:** M Block, Izmir Society, Canal Road, Lahore
-* **Mobile:** 0304-1111-MGS (0304 1111 647)
-* **Landline:** 042 35961842
-
-### MGS Qarshi University Campus
-* **Address:** Canal Road, Opposite Izmir Society, Lahore
-* **Mobile:** 0300-7444382
-* **Landline:** 042 35404834
+## School History Timeline
+| Year | Event |
+| :--- | :--- |
+| 2003 | Message Foundation established |
+| 2006 | MGS founded, classes commenced |
+| 2010 | Segregated Boys and Girls branches inaugurated |
+| 2011 | Registration with Education Department |
+| 2012 | Affiliation with BISE Lahore (Matric) |
+| 2013 | Registration as Cambridge Secondary School |
+| 2017 | Registration as Cambridge Primary School |
+| 2020 | Member Microsoft School |
+| 2021 | Registration with PCC |
+| 2022 | MGS Qarshi University Campus inaugurated |
+| 2022 | Registration with PCP |
 
 ---
-*Copyright 2026 © Message Grammar School - A Project of Message Foundation*
+
+## Campus Locations
+
+### Campus 1 — MGS Izmir (Flagship)
+- **Address:** M Block, Izmir Society, Canal Road, Lahore
+- **Phone:** 0304-1111-647
+- **Landline:** 042-35961842
+
+### Campus 2 — MGS Qarshi University Campus
+- **Address:** Canal Road, Opposite Izmir Society, Lahore
+- **Phone:** 0300-7444382
+- **Landline:** 042-35404834
+
+---
+
+## Email
+- communication@mgs.edu.pk
+- info@mgs.edu.pk

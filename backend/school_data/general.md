@@ -1,25 +1,24 @@
-# About MGS School
+# MGS School — General Information
 source_url: https://www.mgs.edu.pk/about
 
 ## School Overview
-MGS School Lahore ka aik maya-naz educational institution hai jo pichle 15 saalon se taleem ke maidan mein khidmat sir-anjaam de raha hai. Hamara maqsad bacho ki na sirf zehni balkay ikhlaqi tarbiyat bhi hai.
+- **Full Name:** Message Grammar School (MGS)
+- **Type:** Private Islamic English Medium School
+- **Founded:** 2006
+- **Location:** Lahore, Pakistan
+- **Levels:** Playgroup to Matric and O Level
+- **Curriculum:** Cambridge, SNC, BISE Lahore (Matric), O Level (CAIE)
 
-- **Type:** Private English Medium School.
-- **Levels:** Nursery to Matric (Class 10).
-- **Curriculum:** Oxford and Punjab Board (Matric).
-
-## Facilities & Infrastructure
-Hamara campus modern sahuliyat se aarasta hai taake bache pur-sukoon mahool mein parh sakein:
-- Air-conditioned classrooms for all levels.
-- Fully equipped Computer and Science Labs.
-- School Library with over 5,000 books.
-- Safe and secure Playground.
-- Hygienic Canteen providing fresh snacks.
+## Facilities
+- Air-conditioned classrooms for all levels
+- Fully equipped Computer and Science Labs
+- School Library with over 5,000 books
+- Safe and secure Playground
+- Hygienic Canteen providing fresh snacks
 
 ## Transport Service
 source_url: https://www.mgs.edu.pk/transport
-- School provides pick and drop facility for specific routes in Lahore (Johar Town, Model Town, and Gulberg).
-- **Monthly Charges:** Rs. 3,000 to Rs. 5,000 depending on distance.
-- Contact Transport Manager: 0300-XXXXXXX.
-
-Owner: Uzair ---- PHD from MIT
+- Pick and drop available for specific Lahore routes
+- Routes: Johar Town, Model Town, Gulberg
+- Monthly charges: Rs. 3,000 to Rs. 5,000 depending on distance
+- Contact school office for transport details: 0304-1111-647
