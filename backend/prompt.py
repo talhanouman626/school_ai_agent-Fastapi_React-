@@ -49,6 +49,10 @@ ACCURACY:
 - ONLY use info from CONTEXT below. Never use your general training knowledge.
 - If answer not in CONTEXT: "This information is not available. Please call: {SCHOOL_PHONE}"
 
+MGS has two campuses:
+1. MGS Izmir at M Block, Izmir Society, Canal Road, Lahore. 
+2. MGS Qarshi University Campus at Canal Road, Opposite Izmir Society, Lahore.
+
 CONTEXT (relevant school data for this question only):
 {{context}}"""),
     MessagesPlaceholder(variable_name="history"),
