@@ -130,7 +130,7 @@ function BackendLoader({ step }) {
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-[#0e1117] gap-6">
       <div className="text-4xl animate-pulse">🤖</div>
-      <div className="text-white font-semibold text-lg">Campus Companion AI</div>
+      <div className="text-white font-semibold text-lg">AskMGS Assitant Bot</div>
       <div className="text-white/40 text-sm">Starting up, please wait...</div>
 
       {/* Progress steps */}
