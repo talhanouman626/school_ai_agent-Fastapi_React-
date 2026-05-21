@@ -290,7 +290,7 @@ export default function ChatWindow({ onClear, clearTrigger }) {
       <div className="shrink-0 px-8 pt-5 pb-4 border-b border-white/8">
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-semibold text-white tracking-tight">
-            🤖 Campus Companion AI
+            🤖 AskMGS Bot
           </h1>
           <span className="text-xs text-white/30 bg-white/5 px-2 py-1 rounded-full border border-white/8">
             MGS Lahore

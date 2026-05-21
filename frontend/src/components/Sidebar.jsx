@@ -19,7 +19,7 @@ export default function Sidebar({ onClear, onClose }) {
             src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png"
             alt="logo" className="w-10 h-10"
           />
-          <span className="text-white font-semibold text-sm">Campus Dashboard</span>
+          <span className="text-white font-semibold text-sm">AskMGS Dashboard</span>
         </div>
         {/* Close button — sirf mobile pe */}
         <button
@@ -83,7 +83,7 @@ export default function Sidebar({ onClear, onClose }) {
       {/* Footer */}
       <div className="mt-auto text-gray-600 text-xs">
         <p>Sync Date: {today}</p>
-        <p className="mt-1 text-gray-700">MGS Campus Companion AI</p>
+        <p className="mt-1 text-gray-700">AskMGS Bot</p>
       </div>
     </div>
   )
